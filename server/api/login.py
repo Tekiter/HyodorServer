@@ -69,7 +69,7 @@ class Login(Resource):
             }
             return json, 200
 
-        return {"msg": "올바르지 않은 아이디 또는 비밀번호입니다."}, 400
+        return {"msg": "올바르지 않은 아이디 또는 비밀번호입니다."}, 401
 
 
     # register
