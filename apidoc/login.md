@@ -14,7 +14,7 @@
 
   **필수:**
  
-   `username=[string]` : 유저의 아이디
+   `username=[string]` : 유저의 아이디 <br />
    `password=[string]` : 유저의 비밀번호
 
 * **성공 응답:**
