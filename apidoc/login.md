@@ -19,19 +19,19 @@
 
 * **성공 응답:**
 
-  * **Code:** 200 <br />
-    **Content:** `{ username: "guest", "access_token": "[access token]", "refresh_token": "[refresh token]" }`
+  * **Code:** 200
+  * **Content:** `{ username: "guest", "access_token": "[access token]", "refresh_token": "[refresh token]" }`
  
 * **에러 응답:**
 
-  * **Code:** 401 UNAUTHORIZED <br />
-    **Description** 아이디 또는 비밀번호가 일치하지 않을 때 <br />
-    **Content:** `{ msg: "올바르지 않은 아이디 또는 비밀번호입니다." }`
+  * **Code:** 401 UNAUTHORIZED
+  * **Description:** 아이디 또는 비밀번호가 일치하지 않을 때
+  * **Content:** `{ msg: "올바르지 않은 아이디 또는 비밀번호입니다." }`
 
   OR
 
-  * **Code:** 400 BAD REQUEST <br />
-    **Description** 올바른 매개변수가 아닐 때
+  * **Code:** 400 BAD REQUEST
+  * **Description:** 올바른 매개변수가 아닐 때
 
 * **Sample Call:**
 
@@ -63,18 +63,18 @@ refresh-token 으로 access-token 을 다시 발급 받습니다.
 
 * **성공 응답:**
 
-  * **Code:** 200 <br />
-    **Content:** `{ "access_token": "[access token]"}`
+  * **Code:** 200
+  * **Content:** `{ "access_token": "[access token]"}`
  
 * **에러 응답:**
 
-  * **Code:** 401 UNAUTHORIZED <br />
-    **Description** refresh token 도 만료되었을때 또는 헤더에 토큰이 없을 때<br />
+  * **Code:** 401 UNAUTHORIZED
+  * **Description:** refresh token 도 만료되었을때 또는 헤더에 토큰이 없을 때
 
   OR
 
-  * **Code:** 400 BAD REQUEST <br />
-    **Description** 올바른 매개변수가 아닐 때
+  * **Code:** 400 BAD REQUEST
+  * **Description:** 올바른 매개변수가 아닐 때
 
 * **Sample Call:**
 
@@ -108,18 +108,18 @@ refresh-token 으로 access-token 을 다시 발급 받습니다.
 
 * **성공 응답:**
 
-  * **Code:** 201 CREATED <br />
+  * **Code:** 201 CREATED
  
 * **에러 응답:**
 
-  * **Code:** 401 UNAUTHORIZED <br />
-    **Description** 아이디 또는 비밀번호가 일치하지 않을 때 <br />
-    **Content:** `{ msg: "올바르지 않은 아이디 또는 비밀번호입니다." }`
+  * **Code:** 401 UNAUTHORIZED
+  * **Description:** 아이디 또는 비밀번호가 일치하지 않을 때
+  * **Content:** `{ msg: "올바르지 않은 아이디 또는 비밀번호입니다." }`
 
   OR
 
-  * **Code:** 400 BAD REQUEST <br />
-    **Description** 올바른 매개변수가 아닐 때 (아이디, 이메일 중복도 포함)
+  * **Code:** 400 BAD REQUEST
+  * **Description** 올바른 매개변수가 아닐 때 (아이디, 이메일 중복도 포함)
 
 * **Sample Call:**
 
