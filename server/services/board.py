@@ -1,6 +1,7 @@
 import functools
 
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy import func
 
 from .. import db
 from ..model import User, Board, BoardPost, Comment
@@ -67,6 +68,10 @@ def get_boards() -> List[Board]:
     return result
 
 
+def get_post_count(board_id):
+    return BoardPost.query.filter_by(board_id=board_id).count()
+
+
 def get_posts(board_id=None, amount=None, start=0) -> List[BoardPost]:
     result : List[BoardPost] = []
 
@@ -74,11 +79,10 @@ def get_posts(board_id=None, amount=None, start=0) -> List[BoardPost]:
     if targetboard == None:
         return BoardResult.NO_BOARD_EXISTS, None
 
-    # posts = BoardPost.query.filter_by(id=board_id).offset(start)
     posts = BoardPost.query.filter_by(board_id=board_id).order_by(BoardPost.id.desc())
     if amount != None:
         posts = posts.limit(amount)
-        if start != None:
+        if start != None and start >= 0:
             posts = posts.offset(start)
     
 

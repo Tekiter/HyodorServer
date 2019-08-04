@@ -117,7 +117,7 @@ class Login(Resource):
 class LoginRefresh(Resource):
 
     @jwt_refresh_token_required
-    def post(self):
+    def get(self):
         cur = get_jwt_identity()
         new_access = create_access_token(identity=cur, fresh=False)
         return {'access_token': new_access}, 200

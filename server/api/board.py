@@ -6,7 +6,8 @@ from flask_jwt_extended import (create_access_token, create_refresh_token, get_j
 from .. import db
 from ..model import User, Board, BoardPost
 from ..services.login import login_required, permission_required, get_user, UserPermission
-from ..services.board import create_board, post_board, get_boards, get_posts, get_userinfo, post_post, BoardResult
+from ..services.board import (create_board, post_board, get_boards, get_posts, get_userinfo, post_post, BoardResult,
+                            get_post_count)
 
 
 
@@ -22,7 +23,7 @@ class BoardManage(Resource):
             result.append({
                 'id':b.id,
                 'name':b.name,
-                
+                'count':get_post_count(b.id)
             })
         
         return {"boards":result}, 200
@@ -60,6 +61,7 @@ class UserField(fields.Raw):
 
 
 post_field = {
+    'id': fields.Integer,
     'title': fields.String,
     'content': fields.String,
     'vote_up': fields.Integer,
@@ -82,7 +84,7 @@ class BoardPostList(Resource):
 
         args['pagesize'] = min(args['pagesize'], 50)
 
-        result, posts = get_posts(board_id, amount=pagesize, start=page * pagesize)
+        result, posts = get_posts(board_id, amount=args['pagesize'], start=(args['page'] - 1) * args['pagesize'])
 
         if result == BoardResult.NO_BOARD_EXISTS:
             return {"message":"게시판이 없습니다."}, 400
