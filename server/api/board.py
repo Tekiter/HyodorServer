@@ -28,7 +28,7 @@ class BoardManage(Resource):
         
         return {"boards":result}, 200
 
-    @permission_required(UserPermission.ADMIN)
+    @permission_required(UserPermission.Guest)
     #@login_required
     #@jwt_required
     #@jwt_optional
@@ -92,6 +92,7 @@ class BoardPostList(Resource):
         output = [marshal(i, post_field) for i in posts]
         
         return {
+            'totalcount': get_post_count(board_id),
             'count': len(output),
             'posts': output
         }, 200
