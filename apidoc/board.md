@@ -207,3 +207,213 @@
 * **Notes:**
 
     None
+
+
+
+**게시글 열람**
+----
+게시글을 봅니다.
+
+* **URL**
+
+  /api/v1/board/<int:board_id>
+
+* **Method:**
+  
+  `GET`
+
+* **인자**
+
+  None
+
+* **성공 응답:**
+
+  * **Code:** 200
+  * **Content:** 
+```javascript
+{
+"id": 40,
+"title": "title2",
+"content": "content2",
+"vote_up": 0,
+"vote_down": 0,
+"visited": 0,
+"writer":{
+"username": "helloworld",
+"nickname": "helloworld"
+},
+"comments":[
+{
+"id": 4,
+"content": "덧글1",
+"vote_up": 0,
+"vote_down": 0,
+"writer":{"username": "helloworld", "nickname": "helloworld"}
+},
+{
+"id": 5,
+"content": "덧글2",
+"vote_up": 0,
+"vote_down": 0,
+"writer":{"username": "helloworld", "nickname": "helloworld"}
+}
+]
+}
+```
+ 
+* **에러 응답:**
+
+  * **Code:** 401 UNAUTHORIZED
+  * **Description:** 로그인이 안되어있을때
+
+  OR
+
+  * **Code:** 404 NOT FOUND
+  * **Description:** 게시글이 존재하지 않을 때
+
+* **Sample Call:**
+
+    None
+
+* **Notes:**
+
+    None
+
+
+
+**게시글 삭제**
+----
+게시글을 씁니다.
+
+* **URL**
+
+  /api/v1/board/<int:board_id>
+
+* **Method:**
+  
+  `DELETE`
+
+* **인자**
+
+  **필수:**
+ 
+   `post_id=[int]` : 게시글 번호 <br />
+   `content=[string]` : 내용 <br />
+
+* **성공 응답:**
+
+  * **Code:** 200
+  * **Content:** ```{}```
+ 
+* **에러 응답:**
+
+  * **Code:** 401 UNAUTHORIZED
+  * **Description:** 로그인이 안되어있을때
+
+  OR
+
+  * **Code:** 404 NOT FOUND
+  * **Description:** 게시글이 존재하지 않을 때
+
+  OR
+
+  * **Code:** 403 Forbidden
+  * **Description:** 유저의 권한이 부족할 때
+
+* **Sample Call:**
+
+    None
+
+* **Notes:**
+
+    None
+
+
+**덧글 작성**
+----
+덧글을 씁니다.
+
+* **URL**
+
+  /api/v1/board/comment
+
+* **Method:**
+  
+  `POST`
+
+* **인자**
+
+  None
+
+* **성공 응답:**
+
+  * **Code:** 200
+  * **Content:** ```{}```
+ 
+* **에러 응답:**
+
+  * **Code:** 401 UNAUTHORIZED
+  * **Description:** 로그인이 안되어있을때
+
+  OR
+
+  * **Code:** 404 NOT FOUND
+  * **Description:** 게시글이 존재하지 않을 때
+
+  OR
+
+  * **Code:** 403 Forbidden
+  * **Description:** 유저의 권한이 부족할 때
+
+* **Sample Call:**
+
+    None
+
+* **Notes:**
+
+    None
+
+
+**덧글 삭제**
+----
+덧글을 삭제합니다.
+
+* **URL**
+
+  /api/v1/board/comment/<int:comment_id>
+
+* **Method:**
+  
+  `DELETE`
+
+* **인자**
+
+  None
+
+* **성공 응답:**
+
+  * **Code:** 200
+  * **Content:** ```{}```
+ 
+* **에러 응답:**
+
+  * **Code:** 401 UNAUTHORIZED
+  * **Description:** 로그인이 안되어있을때
+
+  OR
+
+  * **Code:** 404 NOT FOUND
+  * **Description:** 덧글이 존재하지 않을 때
+
+  OR
+
+  * **Code:** 403 Forbidden
+  * **Description:** 유저의 권한이 부족할 때
+
+* **Sample Call:**
+
+    None
+
+* **Notes:**
+
+    None
