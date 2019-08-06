@@ -4,8 +4,8 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy import func
 
 from .. import db
-from ..model import User, Board, BoardPost, Comment
-from .login import login_required, get_userinfo, get_user
+from ..model import User, Board, BoardPost, Comment, BoardPostVote
+from .login import login_required, get_userinfo, get_user, UserPermission
 
 from typing import List
 
@@ -16,8 +16,10 @@ class BoardResult:
     SUCCESS = 0
     INTERNAL_ERROR = 4
     DB_ERROR = 5
-    BOARDNAME_EXISTS = 10
+    EXISTS = 10
+    
     NOT_EXISTS = 11
+    NOT_OWNER = 12
     NO_BOARD_EXISTS = 20
     PERMISSION_REQUIRED = 40
 
@@ -32,7 +34,7 @@ def create_board(board: Board, owner: User):
         return BoardResult.SUCCESS
     except IntegrityError:
         db.session.rollback()
-        return BoardResult.BOARDNAME_EXISTS
+        return BoardResult.EXISTS
     except:
         return BoardResult.DB_ERROR
     pass
@@ -111,12 +113,69 @@ def post_post(board_id, post: BoardPost, owner: User) -> BoardResult:
     return BoardResult.SUCCESS
 
 
+def delete_post(post_id):
+    post: BoardPost = BoardPost.query.get(post_id)
+
+    if post == None:
+        return BoardResult.NOT_EXISTS
+
+
+    user = get_user()
+
+
+    if post.owner != user and post.owner.permission < UserPermission.ADMIN:
+        return BoardResult.NOT_OWNER
+
+    db.session.delete(post)
+    try:
+        db.session.commit()
+    except:
+        return BoardResult.DB_ERROR
+    return BoardResult.SUCCESS
+
+    
+
+
 def get_post_content(post_id):
     post: BoardPost = BoardPost.query.filter_by(id=post_id).first()
     
     if post == None:
         return BoardResult.NOT_EXISTS, None
     return BoardResult.SUCCESS, post
+
+
+def vote_up_post(post_id):
+    user = get_user()
+    
+    vote = BoardPostVote.query.filter(BoardPostVote.post_id==post_id, BoardPostVote.owner_id==user.id, BoardPostVote.is_comment==False).first()
+    if vote == None:
+        BoardPostVote(post_id=post_id, owner_id=user.id, vote_up=1)
+        return BoardResult.SUCCESS
+    else:
+        if vote.vote_up == 0:
+            vote.vote_up = 1
+            vote.vote_down = 0
+
+            db.session.commit()
+            return BoardResult.SUCCESS
+    return BoardResult.EXISTS
+
+def vote_down_post(post_id):
+    user = get_user()
+    
+    vote = BoardPostVote.query.filter(BoardPostVote.post_id==post_id, BoardPostVote.owner_id==user.id, BoardPostVote.is_comment==False).first()
+    if vote == None:
+        BoardPostVote(post_id=post_id, owner_id=user.id, vote_down=1)
+        return BoardResult.SUCCESS
+    else:
+        if vote.vote_down == 0:
+            vote.vote_down = 1
+            vote.vote_up = 0
+
+            db.session.commit()
+            return BoardResult.SUCCESS
+    return BoardResult.EXISTS
+
 
 
 def post_comment(post_id, comment: Comment, owner: User, parent_id = None):
@@ -135,3 +194,34 @@ def post_comment(post_id, comment: Comment, owner: User, parent_id = None):
             return BoardResult.DB_ERROR
 
         return BoardResult.SUCCESS
+    return BoardResult.NOT_EXISTS
+
+
+def get_comment(comment_id):
+    comment = Comment.query.get(comment_id)
+
+    if comment == None:
+        return BoardResult.NOT_EXISTS, None
+    
+    return BoardResult.SUCCESS, comment
+
+
+def delete_comment(comment_id):
+    comment = Comment.query.get(comment_id)
+
+    if comment == None:
+        return BoardResult.NOT_EXISTS
+
+    user = get_user()
+
+    if comment.owner != user and comment.owner.permission < UserPermission.ADMIN:
+        return BoardResult.NOT_OWNER
+
+    db.session.delete(comment)
+    try:
+        db.session.commit()
+    except:
+        return BoardResult.DB_ERROR
+    return BoardResult.SUCCESS
+    
+    

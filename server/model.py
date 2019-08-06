@@ -104,6 +104,25 @@ class BoardPost(db.Model):
     board = db.relationship(Board.__tablename__, backref=db.backref("posts", lazy=True))
 
 
+class BoardPostVote(db.Model):
+    __tablename__ = "BoardPostVote"
+
+    id = db.Column(db.Integer, primary_key=True)
+
+    post_id = db.Column(db.Integer, db.ForeignKey(BoardPost.__tablename__+".id"), nullable=False)
+    owner_id = db.Column(db.Integer, db.ForeignKey(User.__tablename__+".id"), nullable=False)
+
+    
+    is_comment = db.Column(db.Boolean, default=False)
+    
+    vote_up = db.Column(db.Integer, default=0)
+    vote_down = db.Column(db.Integer, default=0)
+
+    post = db.relationship(BoardPost.__tablename__, backref=db.backref("votes", lazy=True, cascade="delete"))
+    owner = db.relationship(User.__tablename__)
+
+
+
 class Comment(db.Model):
     __tablename__ = "Comment"
 
@@ -120,7 +139,7 @@ class Comment(db.Model):
 
     parent = db.relationship(__tablename__, backref=db.backref("children", remote_side=[id]))
     owner = db.relationship(User.__tablename__, backref=db.backref("comments", lazy=True))
-    post = db.relationship(BoardPost.__tablename__, backref=db.backref("comments", lazy=True))
+    post = db.relationship(BoardPost.__tablename__, backref=db.backref("comments", lazy=True, cascade="delete"))
 
 
 

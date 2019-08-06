@@ -4,14 +4,60 @@ from flask_jwt_extended import (create_access_token, create_refresh_token, get_j
                                 jwt_required, jwt_refresh_token_required)
 
 from .. import db
-from ..model import User, Board, BoardPost, Comment
+from ..model import User, Board, BoardPost, Comment, BoardPostVote
 from ..services.login import login_required, permission_required, get_user, UserPermission
 from ..services.board import (create_board, post_board, get_boards, get_posts, get_userinfo, post_post, BoardResult,
-                            get_post_count, get_post_content, post_comment)
+                            get_post_count, get_post_content, post_comment, delete_post, delete_comment, get_comment)
 
 
 
 MSG_REQUIRED = 'This field is required.'
+
+
+
+class UserField(fields.Raw):
+    def format(self, value: User):
+        return {
+            'username':value.username, 
+            'nickname':value.nickname
+            }
+
+
+post_field = {
+    'id': fields.Integer,
+    'title': fields.String,
+    'content': fields.String,
+    'vote_up': fields.Integer,
+    'vote_down': fields.Integer,
+    'visited': fields.Integer,
+    'writer': UserField(attribute='owner')
+
+}
+
+class CommentField(fields.Raw):
+    def format(self, value: Comment):
+        return {
+            'id': value.id,
+            'content': value.content,
+            'vote_up': value.vote_up,
+            'vote_down': value.vote_down,
+            'writer': UserField().format(value.owner)
+        }
+
+
+post_content_field = {
+    'id': fields.Integer,
+    'title': fields.String,
+    'content': fields.String,
+    'vote_up': fields.Integer,
+    'vote_down': fields.Integer,
+    'visited': fields.Integer,
+    'writer': UserField(attribute='owner'),
+    'comments': fields.List(CommentField)
+
+}
+
+
 
 
 class BoardManage(Resource):
@@ -52,24 +98,7 @@ class BoardManage(Resource):
         return {}, 200
 
 
-class UserField(fields.Raw):
-    def format(self, value: User):
-        return {
-            'username':value.username, 
-            'nickname':value.nickname
-            }
 
-
-post_field = {
-    'id': fields.Integer,
-    'title': fields.String,
-    'content': fields.String,
-    'vote_up': fields.Integer,
-    'vote_down': fields.Integer,
-    'visited': fields.Integer,
-    'writer': UserField(attribute='owner')
-
-}
 
 
 class BoardPostList(Resource):
@@ -117,28 +146,7 @@ class BoardPostList(Resource):
 
 
 
-class CommentListField(fields.Raw):
-    def format(self, value: Comment):
-        return {
-            'id': value.id,
-            'content': value.content,
-            'vote_up': value.vote_up,
-            'vote_down': value.vote_down,
-            'writer': UserField().format(value.owner)
-        }
 
-
-post_content_field = {
-    'id': fields.Integer,
-    'title': fields.String,
-    'content': fields.String,
-    'vote_up': fields.Integer,
-    'vote_down': fields.Integer,
-    'visited': fields.Integer,
-    'writer': UserField(attribute='owner'),
-    'comments': fields.List(CommentListField)
-
-}
 
 
 class BoardPostView(Resource):
@@ -154,8 +162,18 @@ class BoardPostView(Resource):
 
         return {}, 500
 
+    @login_required
     def delete(self, post_id):
 
+        result = delete_post(post_id)
+
+        if result == BoardResult.NOT_EXISTS:
+            return {"message":"게시글이 없습니다."}, 404
+        if result == BoardResult.NOT_OWNER:
+            return {"message":"권한이 없습니다."}, 403
+
+        if result == BoardResult.SUCCESS:
+            return {}, 200
         
 
         return {}, 500
@@ -184,4 +202,28 @@ class BoardComment(Resource):
             return {}, 201
         if result == BoardResult.NOT_EXISTS:
             return {"message":"게시글이 없습니다."}, 404
+        return {}, 500
+
+
+class BoardCommentAction(Resource):
+
+    def get(self, comment_id):
+        result, comment = get_comment(comment_id)
+
+        if result == BoardResult.SUCCESS:
+            return CommentField().format(comment), 200
+        if result == BoardResult.NOT_EXISTS:
+            return {"message":"덧글이 없습니다."}, 404
+        return {}, 500
+
+    @login_required
+    def delete(self, comment_id):
+        result = delete_comment(comment_id)
+
+        if result == BoardResult.SUCCESS:
+            return {}, 200
+        if result == BoardResult.NOT_EXISTS:
+            return {"message":"덧글이 없습니다."}, 404
+        if result == BoardResult.NOT_OWNER:
+            return {"message":"권한이 없습니다."}, 403
         return {}, 500
