@@ -109,3 +109,29 @@ def post_post(board_id, post: BoardPost, owner: User) -> BoardResult:
         return BoardResult.DB_ERROR
 
     return BoardResult.SUCCESS
+
+
+def get_post_content(post_id):
+    post: BoardPost = BoardPost.query.filter_by(id=post_id).first()
+    
+    if post == None:
+        return BoardResult.NOT_EXISTS, None
+    return BoardResult.SUCCESS, post
+
+
+def post_comment(post_id, comment: Comment, owner: User, parent_id = None):
+    result, post = get_post_content(post_id)
+    if result == BoardResult.SUCCESS:
+        comment.owner = owner
+        comment.post = post
+        if parent_id != None:
+            
+            comment.parent_id = parent_id
+
+        post.comments.append(comment)
+        try:
+            db.session.commit()
+        except:
+            return BoardResult.DB_ERROR
+
+        return BoardResult.SUCCESS

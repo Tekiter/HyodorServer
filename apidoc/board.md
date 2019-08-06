@@ -17,8 +17,23 @@
 * **성공 응답:**
 
   * **Code:** 200 OK
-  * **Content:** `{"boards":[{"id": 1,"name": "testboard","count": 37},{"id": 2,"name": "board2","count": 2}]}`
-
+  * **Content:** 
+```javascript
+{
+    "boards":[
+        {
+            "id": 1,
+            "name": "testboard",
+            "count": 37
+        },
+        {
+            "id": 2,
+            "name": "board2",
+            "count": 2
+        }
+    ]
+}
+```
  
 * **에러 응답:**
 
@@ -91,7 +106,7 @@
 
 * **URL**
 
-  /api/v1/board/<board_id:int>
+  /api/v1/board/<int:board_id>
 
 * **Method:**
   
@@ -132,6 +147,11 @@
   * **Code:** 400 BAD REQUEST
   * **Description:** 올바른 매개변수가 아닐 때
 
+  OR
+
+  * **Code:** 404 NOT FOUND
+  * **Description:** 해당하는 게시판이 없을 때
+
 * **Sample Call:**
 
     None
@@ -147,7 +167,7 @@
 
 * **URL**
 
-  /api/v1/board/<board_id:int>
+  /api/v1/board/<int:board_id>
 
 * **Method:**
   

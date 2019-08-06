@@ -4,10 +4,10 @@ from flask_jwt_extended import (create_access_token, create_refresh_token, get_j
                                 jwt_required, jwt_refresh_token_required)
 
 from .. import db
-from ..model import User, Board, BoardPost
+from ..model import User, Board, BoardPost, Comment
 from ..services.login import login_required, permission_required, get_user, UserPermission
 from ..services.board import (create_board, post_board, get_boards, get_posts, get_userinfo, post_post, BoardResult,
-                            get_post_count)
+                            get_post_count, get_post_content, post_comment)
 
 
 
@@ -110,7 +110,78 @@ class BoardPostList(Resource):
         newpost = BoardPost(title=args['title'], content=args['content'])
         result = post_post(board_id, newpost, get_user())
         if result == BoardResult.NO_BOARD_EXISTS:
-            return {"message":"게시판이 없습니다."}, 400
+            return {"message":"게시판이 없습니다."}, 404
         if result == BoardResult.SUCCESS:
             return {}, 201
+        return {}, 500
+
+
+
+class CommentListField(fields.Raw):
+    def format(self, value: Comment):
+        return {
+            'id': value.id,
+            'content': value.content,
+            'vote_up': value.vote_up,
+            'vote_down': value.vote_down,
+            'writer': UserField().format(value.owner)
+        }
+
+
+post_content_field = {
+    'id': fields.Integer,
+    'title': fields.String,
+    'content': fields.String,
+    'vote_up': fields.Integer,
+    'vote_down': fields.Integer,
+    'visited': fields.Integer,
+    'writer': UserField(attribute='owner'),
+    'comments': fields.List(CommentListField)
+
+}
+
+
+class BoardPostView(Resource):
+
+    def get(self, post_id):
+        
+        result, post = get_post_content(post_id)
+        if result == BoardResult.SUCCESS:
+
+            return marshal(post, post_content_field), 200
+        if result == BoardResult.NOT_EXISTS:
+            return {"message":"게시글이 없습니다."}, 404
+
+        return {}, 500
+
+    def delete(self, post_id):
+
+        
+
+        return {}, 500
+
+
+class BoardComment(Resource):
+
+    @login_required
+    def post(self):
+
+        parser = reqparse.RequestParser()
+
+        
+        parser.add_argument('post_id', type=int, required=True, help=MSG_REQUIRED)
+        parser.add_argument('content', type=str, required=True, help=MSG_REQUIRED)
+
+        args = parser.parse_args()
+        post_id = args['post_id']
+        content = args['content']
+
+        comment = Comment(content=content)
+
+        result = post_comment(post_id, comment, get_user())
+
+        if result == BoardResult.SUCCESS:
+            return {}, 201
+        if result == BoardResult.NOT_EXISTS:
+            return {"message":"게시글이 없습니다."}, 404
         return {}, 500
