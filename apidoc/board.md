@@ -118,7 +118,7 @@
 
 * **URL**
 
-  /api/v1/board/<int:board_id>
+  /api/v1/board/`<int:board_id>`
 
 * **Method:**
   
@@ -179,7 +179,7 @@
 
 * **URL**
 
-  /api/v1/board/<int:board_id>
+  /api/v1/board/`<int:board_id>`
 
 * **Method:**
   
@@ -228,7 +228,7 @@
 
 * **URL**
 
-  /api/v1/board/<int:board_id>
+  /api/v1/board/`<int:board_id>`
 
 * **Method:**
   
@@ -299,7 +299,7 @@
 
 * **URL**
 
-  /api/v1/board/<int:board_id>
+  /api/v1/board/`<int:board_id>`
 
 * **Method:**
   
@@ -392,7 +392,7 @@
 
 * **URL**
 
-  /api/v1/board/comment/<int:comment_id>
+  /api/v1/board/comment/`<int:comment_id>`
 
 * **Method:**
   
