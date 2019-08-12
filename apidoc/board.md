@@ -295,11 +295,11 @@
 
 **게시글 삭제**
 ----
-게시글을 씁니다.
+게시글을 삭제합니다.
 
 * **URL**
 
-  /api/v1/board/`<int:board_id>`
+  /api/v1/board/post/`<int:post_id>`
 
 * **Method:**
   
