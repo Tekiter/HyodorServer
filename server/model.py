@@ -48,7 +48,7 @@ class ParentInfo(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey("User.id"))
-    user = db.relationship(User.__tablename__, backref=db.backref("parentinfos", lazy=True))
+    user = db.relationship(User.__tablename__, backref=db.backref("parentinfos", lazy=True, cascade="delete"))
 
     relation = db.Column(db.String(20), nullable=False)
     name = db.Column(db.String(20))
