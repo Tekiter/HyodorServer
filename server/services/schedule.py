@@ -10,6 +10,7 @@ class ScheduleResult:
     INTERNAL_ERROR = 30
     NOT_EXISTS = 11
     DB_ERROR = 5
+    NOT_OWNER = 12
 
 
 def get_schedule():
@@ -35,10 +36,13 @@ def create_schedule(schedule: Schedule):
     return ScheduleResult.SUCCESS
 
 def delete_schedule(schedule_id):
-    sche = Schedule.query.get(schedule_id)
+    sche: Schedule = Schedule.query.get(schedule_id)
 
     if sche == None:
         return ScheduleResult.NOT_EXISTS
+
+    if sche.owner_id != get_user().id:
+        return ScheduleResult.NOT_OWNER
 
     db.session.delete(sche)
     try:

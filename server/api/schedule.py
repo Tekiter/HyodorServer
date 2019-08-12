@@ -72,5 +72,7 @@ class SchedulePointAPI(Resource):
             return {}, 200
         elif result == ScheduleResult.NOT_EXISTS:
             return {'message':'일정이 존재하지 않습니다.'}, 404
+        elif result == ScheduleResult.NOT_OWNER:
+            return {}, 403
 
         return {}, 500

@@ -130,6 +130,11 @@
   * **Code:** 401 UNAUTHORIZED
   * **Description:** 로그인이 되어있지 않을 때
 
+  OR
+
+  * **Code:** 403 FORBIDDEN
+  * **Description:** 본인의 일정이 아닐 때
+
 * **Sample Call:**
 
     None
