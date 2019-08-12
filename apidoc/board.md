@@ -228,7 +228,7 @@
 
 * **URL**
 
-  /api/v1/board/`<int:board_id>`
+  /api/v1/board/post/`<int:post_id>`
 
 * **Method:**
   
