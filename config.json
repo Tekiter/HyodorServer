@@ -1,8 +1,6 @@
 {
-    "DEBUG": true,
     "JWT_SECRET_KEY": "somesecret",
     "SECRET_KEY": "secrettwo",
     "PROPAGATE_EXCEPTIONS": true,
-    "SQLALCHEMY_DATABASE_URI": "postgresql://cert:roqkfqhdks@localhost/cert",
     "SQLALCHEMY_TRACK_MODIFICATIONS": false
 }
