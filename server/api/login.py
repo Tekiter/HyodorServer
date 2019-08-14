@@ -64,6 +64,7 @@ class Login(Resource):
         
             json = {
                 'username': str(user.username),
+                'nickname': str(user.nickname),
                 'access_token': str(access_token),
                 'refresh_token': str(refresh_token)
             }

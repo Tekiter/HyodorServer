@@ -47,6 +47,7 @@ class CommentField(fields.Raw):
 
 post_content_field = {
     'id': fields.Integer,
+    'board_id': fields.Integer,
     'title': fields.String,
     'content': fields.String,
     'vote_up': fields.Integer,
