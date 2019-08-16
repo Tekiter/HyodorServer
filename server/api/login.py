@@ -83,17 +83,24 @@ class Login(Resource):
 
         args = parser.parse_args()
 
+        errors = {}
+
         if not valid_username(args['username']):
-            return {"username":"아이디는 6자리 이상의 영문자 또는 숫자여야 합니다."},400
+            errors["username"] = "아이디는 6자리 이상의 영문자 또는 숫자여야 합니다."
         
         if not valid_password(args['password']):
-            return {"password":"비밀번호는 6자리 이상이어야 합니다."},400
+            errors["username"] = "비밀번호는 6자리 이상이어야 합니다."
 
         if not valid_email(args['email']):
-            return {"email":"올바르지 않은 이메일 형식입니다."},400
+            errors["username"] = "올바르지 않은 이메일 형식입니다."
         
         if not valid_nickname(args['nickname']):
-            return {"nickname":"올바르지 않은 닉네임 형식입니다."},400
+            errors["username"] = "올바르지 않은 닉네임 형식입니다."
+
+        if len(errors) != 0:
+            return errors, 400
+
+        
 
 
 
