@@ -93,7 +93,7 @@ class Login(Resource):
             return {"email":"올바르지 않은 이메일 형식입니다."},400
         
         if not valid_nickname(args['nickname']):
-            return {"email":"올바르지 않은 닉네임 형식입니다."},400
+            return {"nickname":"올바르지 않은 닉네임 형식입니다."},400
 
 
 
@@ -106,11 +106,12 @@ class Login(Resource):
         if result == LoginResult.SUCCESS:
             return {"username":newuser.username}, 201
         elif result == LoginResult.EMAIL_EXISTS:
-            return {"msg":"이미 사용중인 이메일입니다."}, 409
+            return {"email":"이미 사용중인 이메일입니다."}, 409
         elif result == LoginResult.USERNAME_EXISTS:
-            return {"msg":"이미 사용중인 아이디입니다."}, 409
+            return {"username":"이미 사용중인 아이디입니다."}, 409
         elif result == LoginResult.USER_EXISTS:
-            return {"msg":"이미 사용중인 아이디 또는 이메일입니다."}, 409
+            return {"email":"이미 사용중인 이메일입니다.",
+                    "username":"이미 사용중인 아이디입니다."}, 409
         else:
             return {"msg":"알 수 없는 오류입니다."}, 500
 
