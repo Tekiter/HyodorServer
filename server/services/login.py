@@ -21,7 +21,7 @@ class LoginResult:
 class UserPermission:
     Guest = 0
     BasicUser = 1
-    ADMIN = 0xfefefe
+    Admin = 0xfefefe
     WEB_MASTER = 0xffffff
 
 
