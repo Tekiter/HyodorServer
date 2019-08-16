@@ -89,13 +89,13 @@ class Login(Resource):
             errors["username"] = "아이디는 6자리 이상의 영문자 또는 숫자여야 합니다."
         
         if not valid_password(args['password']):
-            errors["username"] = "비밀번호는 6자리 이상이어야 합니다."
+            errors["password"] = "비밀번호는 6자리 이상이어야 합니다."
 
         if not valid_email(args['email']):
-            errors["username"] = "올바르지 않은 이메일 형식입니다."
+            errors["email"] = "올바르지 않은 이메일 형식입니다."
         
         if not valid_nickname(args['nickname']):
-            errors["username"] = "올바르지 않은 닉네임 형식입니다."
+            errors["nickname"] = "올바르지 않은 닉네임 형식입니다."
 
         if len(errors) != 0:
             return errors, 400
