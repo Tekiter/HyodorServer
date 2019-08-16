@@ -75,10 +75,7 @@ class BoardManage(Resource):
         
         return {"boards":result}, 200
 
-    @permission_required(UserPermission.Guest)
-    #@login_required
-    #@jwt_required
-    #@jwt_optional
+    @permission_required(UserPermission.Admin)
     def post(self):
         
         parser = reqparse.RequestParser()
@@ -104,7 +101,7 @@ class BoardManage(Resource):
 
 class BoardPostList(Resource):
 
-    
+    @login_required
     def get(self, board_id):
         parser = reqparse.RequestParser()
         parser.add_argument('page', type=int, default=1)
@@ -152,6 +149,7 @@ class BoardPostList(Resource):
 
 class BoardPostView(Resource):
 
+    @login_required
     def get(self, post_id):
         
         result, post = get_post_content(post_id)
@@ -208,6 +206,7 @@ class BoardComment(Resource):
 
 class BoardCommentAction(Resource):
 
+    @login_required
     def get(self, comment_id):
         result, comment = get_comment(comment_id)
 
