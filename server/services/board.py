@@ -123,7 +123,7 @@ def delete_post(post_id):
     user = get_user()
 
 
-    if post.owner != user and post.owner.permission < UserPermission.ADMIN:
+    if post.owner != user and post.owner.permission < UserPermission.Admin:
         return BoardResult.NOT_OWNER
 
     db.session.delete(post)
@@ -214,7 +214,7 @@ def delete_comment(comment_id):
 
     user = get_user()
 
-    if comment.owner != user and comment.owner.permission < UserPermission.ADMIN:
+    if comment.owner != user and comment.owner.permission < UserPermission.Admin:
         return BoardResult.NOT_OWNER
 
     db.session.delete(comment)
