@@ -108,7 +108,7 @@ def permission_required(min_level):
         def wrapper(*args, **kwargs):
             iden = get_jwt_identity()
             
-            if iden.get('permission', 0) >= min_level:
+            if iden.get('perm', 0) >= min_level:
                 return func(*args, **kwargs)
             return {'msg':'권한이 부족합니다.'},403
         return wrapper
