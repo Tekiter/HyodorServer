@@ -7,7 +7,8 @@ from .. import db
 from ..model import User, Board, BoardPost, Comment, BoardPostVote
 from ..services.login import login_required, permission_required, get_user, UserPermission
 from ..services.board import (create_board, post_board, get_boards, get_posts, get_userinfo, post_post, BoardResult,
-                            get_post_count, get_post_content, post_comment, delete_post, delete_comment, get_comment)
+                            get_post_count, get_post_content, post_comment, delete_post, delete_comment, get_comment,
+                            delete_board)
 
 
 
@@ -99,6 +100,8 @@ class BoardManage(Resource):
 
 
 
+
+
 class BoardPostList(Resource):
 
     @login_required
@@ -142,6 +145,19 @@ class BoardPostList(Resource):
             return {}, 201
         return {}, 500
 
+    @permission_required(UserPermission.Admin)
+    def delete(self, board_id):
+        result = delete_board(board_id)
+
+        if result == BoardResult.NOT_EXISTS:
+            return {"message":"게시판이 없습니다."}, 404
+        if result == BoardResult.PERMISSION_REQUIRED:
+            return {"message":"권한이 없습니다."}, 403
+        if result == BoardResult.SUCCESS:
+            return {}, 200
+
+        return {}, 500
+        
 
 
 

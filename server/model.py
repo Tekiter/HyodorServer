@@ -33,7 +33,7 @@ class UserAddi(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey("User.id"))
-    user = db.relationship(User.__tablename__, backref=db.backref("moreinfo", lazy=True))
+    user = db.relationship(User.__tablename__, backref=db.backref("moreinfo", lazy=True, cascade="all, delete-orphan"))
 
 
     age = db.Column(db.Integer)
@@ -47,8 +47,8 @@ class ParentInfo(db.Model):
     __tablename__ = "ParentInfo"
 
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey("User.id"))
-    user = db.relationship(User.__tablename__, backref=db.backref("parentinfos", lazy=True, cascade="delete"))
+    user_id = db.Column(db.Integer, db.ForeignKey("User.id"), nullable=True)
+    user = db.relationship(User.__tablename__, backref=db.backref("parentinfos", lazy=True, cascade="all, delete-orphan"))
 
     relation = db.Column(db.String(20), nullable=False)
     name = db.Column(db.String(20))
@@ -81,7 +81,7 @@ class Board(db.Model):
     permission_write = db.Column(db.Integer, nullable=False, default=0)
 
 
-    owner_id = db.Column(db.Integer, db.ForeignKey(User.__tablename__+".id"), nullable=False)
+    owner_id = db.Column(db.Integer, db.ForeignKey(User.__tablename__+".id"))
 
     owner = db.relationship(User.__tablename__, backref=db.backref("boards", lazy=True))
 
@@ -97,11 +97,11 @@ class BoardPost(db.Model):
     vote_down = db.Column(db.Integer, default=0)
     visited = db.Column(db.Integer, default=0)  
 
-    owner_id = db.Column(db.Integer, db.ForeignKey(User.__tablename__+".id"), nullable=False)
-    board_id = db.Column(db.Integer, db.ForeignKey(Board.__tablename__+".id"), nullable=False)
+    owner_id = db.Column(db.Integer, db.ForeignKey(User.__tablename__+".id"))
+    board_id = db.Column(db.Integer, db.ForeignKey(Board.__tablename__+".id"))
 
     owner = db.relationship(User.__tablename__, backref=db.backref("posts"))
-    board = db.relationship(Board.__tablename__, backref=db.backref("posts", lazy=True))
+    board = db.relationship(Board.__tablename__, backref=db.backref("posts", lazy=True, cascade="all, delete-orphan"))
 
 
 class BoardPostVote(db.Model):
@@ -109,8 +109,8 @@ class BoardPostVote(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
 
-    post_id = db.Column(db.Integer, db.ForeignKey(BoardPost.__tablename__+".id"), nullable=False)
-    owner_id = db.Column(db.Integer, db.ForeignKey(User.__tablename__+".id"), nullable=False)
+    post_id = db.Column(db.Integer, db.ForeignKey(BoardPost.__tablename__+".id"))
+    owner_id = db.Column(db.Integer, db.ForeignKey(User.__tablename__+".id"))
 
     
     is_comment = db.Column(db.Boolean, default=False)
@@ -118,7 +118,7 @@ class BoardPostVote(db.Model):
     vote_up = db.Column(db.Integer, default=0)
     vote_down = db.Column(db.Integer, default=0)
 
-    post = db.relationship(BoardPost.__tablename__, backref=db.backref("votes", lazy=True, cascade="delete"))
+    post = db.relationship(BoardPost.__tablename__, backref=db.backref("votes", lazy=True, cascade="all, delete-orphan"))
     owner = db.relationship(User.__tablename__)
 
 
@@ -133,13 +133,13 @@ class Comment(db.Model):
     vote_down = db.Column(db.Integer, default=0)   
 
     parent_id = db.Column(db.Integer, db.ForeignKey(__tablename__+".id"))
-    owner_id = db.Column(db.Integer, db.ForeignKey(User.__tablename__+".id"), nullable=False)
-    post_id = db.Column(db.Integer, db.ForeignKey(BoardPost.__tablename__+".id"), nullable=False)
+    owner_id = db.Column(db.Integer, db.ForeignKey(User.__tablename__+".id"))
+    post_id = db.Column(db.Integer, db.ForeignKey(BoardPost.__tablename__+".id"))
     
 
     parent = db.relationship(__tablename__, backref=db.backref("children", remote_side=[id]))
     owner = db.relationship(User.__tablename__, backref=db.backref("comments", lazy=True))
-    post = db.relationship(BoardPost.__tablename__, backref=db.backref("comments", lazy=True, cascade="delete"))
+    post = db.relationship(BoardPost.__tablename__, backref=db.backref("comments", lazy=True, cascade="all, delete-orphan"))
 
 
 

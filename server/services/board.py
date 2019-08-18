@@ -39,6 +39,27 @@ def create_board(board: Board, owner: User):
         return BoardResult.DB_ERROR
     pass
 
+def delete_board(board_id):
+    user = get_user()
+
+    board: Board = Board.query.get(board_id)
+
+    if board == None:
+        return BoardResult.NOT_EXISTS
+
+    if user.permission == UserPermission.Admin:
+        db.session.delete(board)
+        db.session.commit()
+        try:
+            pass
+        except:
+            return BoardResult.DB_ERROR
+
+        return BoardResult.SUCCESS
+
+    return BoardResult.PERMISSION_REQUIRED
+
+
 
 def post_board(board_id, post: BoardPost, owner: User):
     board: Board = Board.query.filter_by(id=board_id).first()
