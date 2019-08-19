@@ -1,5 +1,5 @@
 
-from . import login, board, schedule
+from . import login, board, schedule, admin
 
 def load_api(api, base):
     
@@ -18,5 +18,8 @@ def load_api(api, base):
 
     api.add_resource(schedule.ScheduleAPI, base + '/schedule', endpoint="schedule")
     api.add_resource(schedule.SchedulePointAPI, base + '/schedule/<int:schedule_id>', endpoint="schedulepoint")
+
+    api.add_resource(admin.AdminManage, base + '/admin', endpoint="adminmanage")
+    
 
 
