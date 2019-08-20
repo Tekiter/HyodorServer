@@ -7,19 +7,33 @@ from ..model import User, Board, BoardPost, Comment, BoardPostVote
 from ..services.login import UserPermission, get_user, login_required, permission_required
 
 
+class UserField(fields.Raw):
+    def format(self, value: User):
+        return {
+            'username':value.username, 
+            'nickname':value.nickname
+        }
+
+class BoardField(fields.Raw):
+    def format(self, value: Board):
+        return {
+            'id': value.id,
+            'name': value.name
+        }
+
 user_field = {
     'username': fields.String,
     'nickname': fields.String,
     'email': fields.String
 }
 
+board_post_field = {
+    "id": fields.Integer,
+    'title': fields.String,
+    'owner': UserField(),
+    'board': BoardField()
+}
 
-class UserField(fields.Raw):
-    def format(self, value: User):
-        return {
-            'username':value.username, 
-            'nickname':value.nickname
-            }
 
 
 class AdminManage(Resource):
@@ -58,3 +72,15 @@ class UserManage(Resource):
         db.session.commit()
 
         return {}, 200
+
+
+class BoardManageList(Resource):
+
+    @permission_required(UserPermission.Admin)
+    def get(self):
+        posts: BoardPost = BoardPost.query.all()
+
+        return {
+            "posts": [marshal(x, board_post_field) for x in posts]
+        }, 200
+
