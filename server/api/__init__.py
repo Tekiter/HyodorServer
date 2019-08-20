@@ -20,6 +20,8 @@ def load_api(api, base):
     api.add_resource(schedule.SchedulePointAPI, base + '/schedule/<int:schedule_id>', endpoint="schedulepoint")
 
     api.add_resource(admin.AdminManage, base + '/admin', endpoint="adminmanage")
+    api.add_resource(admin.UserManageList, base + '/admin/user', endpoint="adminuserlist")
+    api.add_resource(admin.UserManage, base + '/admin/user/<string:username>', endpoint="adminusermanage")
     
 
 

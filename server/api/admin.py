@@ -14,15 +14,47 @@ user_field = {
 }
 
 
+class UserField(fields.Raw):
+    def format(self, value: User):
+        return {
+            'username':value.username, 
+            'nickname':value.nickname
+            }
+
+
 class AdminManage(Resource):
     
     @permission_required(UserPermission.Admin)
     def get(self):
         admins = User.query.filter(1==1).all()
-        print(admins)
         
         return {
             'admins': [marshal(x, user_field) for x in admins]
         }, 200
         
 
+class UserManageList(Resource):
+
+    @permission_required(UserPermission.Admin)
+    def get(self):
+        users = User.query.all()
+
+        return {
+            "users": [marshal(x, user_field) for x in users]
+        }, 200
+
+
+
+class UserManage(Resource):
+
+    @permission_required(UserPermission.Admin)
+    def delete(self, username):
+        user: User = User.query.filter_by(username=username).first()
+
+        if user == None:
+            return {}, 404
+
+        db.session.delete(user)
+        db.session.commit()
+
+        return {}, 200
