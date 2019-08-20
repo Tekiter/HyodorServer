@@ -18,10 +18,13 @@ MSG_REQUIRED = 'This field is required.'
 
 class UserField(fields.Raw):
     def format(self, value: User):
-        return {
-            'username':value.username, 
-            'nickname':value.nickname
-            }
+        if value == None:
+            return None
+        else:
+            return {
+                'username':value.username, 
+                'nickname':value.nickname
+                }
 
 
 post_field = {
