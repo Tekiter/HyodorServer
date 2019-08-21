@@ -107,4 +107,4 @@ venv.bak/
 # vscode
 .vscode/
 
-server/apicache/
+server/apicache/*
