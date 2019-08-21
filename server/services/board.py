@@ -154,6 +154,31 @@ def delete_post(post_id):
         return BoardResult.DB_ERROR
     return BoardResult.SUCCESS
 
+
+def edit_post(post_id, epost: BoardPost) -> BoardResult:
+    opost: BoardPost = BoardPost.query.get(post_id)
+
+
+
+    if opost == None:
+        return BoardResult.NOT_EXISTS
+
+    user = get_user()
+
+    if opost.owner != user and user.permission < UserPermission.Admin:
+        return BoardResult.NOT_OWNER
+
+    opost.title = epost.title
+    opost.content = epost.content
+        
+    
+    try:
+        db.session.commit()
+    except:
+        return BoardResult.DB_ERROR
+
+    return BoardResult.SUCCESS
+
     
 
 
@@ -245,4 +270,21 @@ def delete_comment(comment_id):
         return BoardResult.DB_ERROR
     return BoardResult.SUCCESS
     
+def edit_comment(comment_id, ecmt: Comment) -> BoardResult:
+    ocmt: Comment = Comment.query.get(comment_id)
+
+    if ocmt == None:
+        return BoardResult.NOT_EXISTS
+
+    user = get_user()
+    if ocmt.owner != user and user.permission < UserPermission.Admin:
+        return BoardResult.NOT_OWNER
+
+    ocmt.content = ecmt.content
     
+    try:
+        db.session.commit()
+    except:
+        return BoardResult.DB_ERROR
+
+    return BoardResult.SUCCESS

@@ -8,7 +8,7 @@ from ..model import User, Board, BoardPost, Comment, BoardPostVote
 from ..services.login import login_required, permission_required, get_user, UserPermission
 from ..services.board import (create_board, post_board, get_boards, get_posts, get_userinfo, post_post, BoardResult,
                             get_post_count, get_post_content, post_comment, delete_post, delete_comment, get_comment,
-                            delete_board)
+                            delete_board, edit_post, edit_comment)
 
 
 
@@ -196,6 +196,24 @@ class BoardPostView(Resource):
 
         return {}, 500
 
+    @login_required
+    def patch(self, post_id):
+        parser = reqparse.RequestParser()
+
+        parser.add_argument("title", type=str, required=True, help=MSG_REQUIRED)
+        parser.add_argument("content", type=str, required=True, help=MSG_REQUIRED)
+
+        args = parser.parse_args()
+
+        result = edit_post(post_id, BoardPost(title=args['title'],content=args['content']))
+
+        if result == BoardResult.NOT_EXISTS:
+            return {}, 404
+        if result == BoardResult.SUCCESS:
+            return {}, 200
+
+        return {}, 500
+
 
 class BoardComment(Resource):
 
@@ -245,4 +263,21 @@ class BoardCommentAction(Resource):
             return {"message":"덧글이 없습니다."}, 404
         if result == BoardResult.NOT_OWNER:
             return {"message":"권한이 없습니다."}, 403
+        return {}, 500
+
+    @login_required
+    def patch(self, comment_id):
+        parser = reqparse.RequestParser()
+
+        parser.add_argument("content", type=str, required=True, help=MSG_REQUIRED)
+
+        args = parser.parse_args()
+
+        result = edit_comment(comment_id, Comment(content=args['content']))
+
+        if result == BoardResult.NOT_EXISTS:
+            return {}, 404
+        if result == BoardResult.SUCCESS:
+            return {}, 200
+
         return {}, 500
