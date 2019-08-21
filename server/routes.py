@@ -1,11 +1,13 @@
-from flask import jsonify
+from flask import jsonify, render_template
 from flask import current_app as app
 
-@app.route('/ping', methods=['GET'])
-def ping_pong():
-    return jsonify('pongpong!')
 
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def main_page(path):
+    return render_template('index.html')
 
-@app.route('/')
-def main_page():
-    return "This is SecureSW API Server"
+# @app.route('/', defaults={'path': ''})
+# @app.route('/<path:path>')
+# def asdf(path):
+#     return str(path)
