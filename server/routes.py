@@ -2,7 +2,7 @@ import os, datetime
 import requests
 import hashlib
 
-from flask import jsonify, render_template, Response
+from flask import jsonify, render_template, Response, request
 from flask import current_app as app
 
 FILE_PATH = os.path.dirname(os.path.abspath(__file__))
@@ -32,7 +32,7 @@ def apicache(path):
 
         
 
-        r = requests.get("http://api.korea.go.kr/openapi/" + path)
+        r = requests.get("http://api.korea.go.kr/openapi/" + path + "?" + request.query_string.decode())
         resulttext = r.text
         resultstatus = r.status_code
 
@@ -46,6 +46,10 @@ def apicache(path):
         return res
     except Exception as err:
         return str(err), 500
+
+# @app.route('/test/<path:path>')
+# def test(path):
+#     return str(request.query_string.decode())
 
 
 @app.route('/', defaults={'path': ''})
