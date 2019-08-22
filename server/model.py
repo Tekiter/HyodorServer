@@ -1,6 +1,8 @@
+import datetime as dt
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from . import db
+from .util import enc
 
 
 
@@ -50,13 +52,31 @@ class ParentInfo(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey("User.id"), nullable=True)
     user = db.relationship(User.__tablename__, backref=db.backref("parentinfos", lazy=True, cascade="all, delete-orphan"))
 
-    relation = db.Column(db.String(20), nullable=False)
-    name = db.Column(db.String(20))
-    gender = db.Column(db.String(10))
-    birthday = db.Column(db.DateTime)
+    relation = db.Column(db.String(1000), nullable=False)
+    name = db.Column(db.String(1000))
+    gender = db.Column(db.String(1000))
+    birthday = db.Column(db.String(1000))
+
+    last_checkup = db.Column(db.String(1000))
 
     prefer_call = db.Column(db.Integer)
     prefer_visit = db.Column(db.Integer)
+
+    additional_info = db.Column(db.String(5000))
+
+    def get_column(self, column_name):
+        return enc.decrypt(getattr(self, column_name))
+
+    def set_column(self, column_name, value):
+        setattr(self, column_name, enc.encrypt(value))
+
+    def get_enc_datetime(self, column_name) -> dt.datetime:
+        timestamp = self.get_column(column_name)
+        return dt.datetime.fromtimestamp(timestamp)
+
+    def set_enc_datetime(self, column_name, value: dt.datetime):
+        self.set_column(self, column_name, value.timestamp())
+
 
 
 class Schedule(db.Model):
