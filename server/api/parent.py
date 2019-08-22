@@ -300,7 +300,7 @@ class ParentGroupView(Resource):
         db.session.add(newgroup)
         db.session.commit()
 
-        return {}, 201
+        return {}, 200
     
 class ParentGroupMove(Resource):
 
