@@ -12,8 +12,10 @@ class LoginResult:
     SUCCESS = 0
     INVALID_IDPW = 10
     USER_EXISTS = 20
+    
     USERNAME_EXISTS = 21
     EMAIL_EXISTS = 22
+    NOT_EXISTS = 23
 
     INTERNAL_ERROR = 30
 
@@ -64,6 +66,23 @@ def register(newuser: User):
     except:
         return LoginResult.INTERNAL_ERROR
 
+
+def withdraw(password):
+    user = get_user()
+
+    if user == None:
+        return LoginResult.NOT_EXISTS
+    
+    if user.verify_password(password):
+        db.session.delete(user)
+
+        try:
+            db.session.commit()
+        except:
+            db.session.rollback()
+            return LoginResult.INTERNAL_ERROR
+        return LoginResult.SUCCESS
+    return LoginResult.INVALID_IDPW
 
 def field_exists(field, value):
     user = User.query.filter(field == value).first()

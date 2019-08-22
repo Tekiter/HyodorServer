@@ -7,7 +7,7 @@ import datetime
 
 from ..model import User
 from .. import db
-from ..services.login import login_required, login, register, create_login_token, LoginResult
+from ..services.login import login_required, login, register, create_login_token, withdraw, LoginResult
 
 
 MSG_REQUIRED = 'This field is required.'
@@ -121,6 +121,12 @@ class Login(Resource):
                     "username":"이미 사용중인 아이디입니다."}, 409
         else:
             return {"msg":"알 수 없는 오류입니다."}, 500
+
+    
+    def delete(self):
+        parser = reqparse.RequestParser()
+
+        parser.add_argument("")
 
 
 class LoginRefresh(Resource):
