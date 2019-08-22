@@ -19,7 +19,7 @@ args = parser.parse_args()
 
 if args.makedb:
     db.create_all()
-if args.makekey:
+elif args.makekey:
     print("key: %s" % Fernet.generate_key())
 else:
     print("Nothing Happened.")

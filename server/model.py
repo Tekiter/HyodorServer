@@ -45,12 +45,29 @@ class UserAddi(db.Model):
     mediinfo = db.Column(db.String(1000))
 
 
+class ParentGroup(db.Model):
+    __tablename__ = "ParentGroup"
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("User.id"), nullable=True)
+    user = db.relationship(User.__tablename__, backref=db.backref("parentgroups"))
+
+    name = db.Column(db.String(100), default="그룹")
+
+    prefer_call = db.Column(db.Integer)
+    prefer_visit = db.Column(db.Integer)
+
+    additional_info = db.Column(db.String(5000))
+
 class ParentInfo(db.Model):
     __tablename__ = "ParentInfo"
 
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey("User.id"), nullable=True)
     user = db.relationship(User.__tablename__, backref=db.backref("parentinfos", lazy=True, cascade="all, delete-orphan"))
+
+    group_id = db.Column(db.Integer, db.ForeignKey("ParentGroup.id"), nullable=True)
+    group = db.relationship(ParentGroup.__tablename__, backref=db.backref("parentinfos"))
 
     relation = db.Column(db.String(1000), nullable=False)
     name = db.Column(db.String(1000))
@@ -76,6 +93,9 @@ class ParentInfo(db.Model):
 
     def set_enc_datetime(self, column_name, value: dt.datetime):
         self.set_column(self, column_name, value.timestamp())
+
+
+
 
 
 
