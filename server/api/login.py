@@ -7,7 +7,7 @@ import datetime
 
 from ..model import User
 from .. import db
-from ..services.login import login_required, login, register, create_login_token, withdraw, LoginResult
+from ..services.login import login_required, login, register, create_login_token, withdraw, LoginResult, get_user
 
 
 MSG_REQUIRED = 'This field is required.'
@@ -41,9 +41,13 @@ class Login(Resource):
     @login_required
     def get(self):
         
-        iden = get_jwt_identity()
+        user = get_user()
         
-        return iden
+        return {
+            "username": user.username,
+            "nickname": user.nickname,
+            "email": user.email
+        }, 200
 
 
     # login
