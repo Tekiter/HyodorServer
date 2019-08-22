@@ -214,7 +214,9 @@ def vote_up_post(post_id):
             db.session.commit()
             return BoardResult.SUCCESS
         else:
-            return BoardResult.EXISTS
+            vote.vote_up = 0
+            db.session.commit()
+            return BoardResult.SUCCESS
     return BoardResult.NOT_EXISTS
 
 
@@ -259,7 +261,9 @@ def vote_down_post(post_id):
             db.session.commit()
             return BoardResult.SUCCESS
         else:
-            return BoardResult.EXISTS
+            vote.vote_down = 0
+            db.session.commit()
+            return BoardResult.SUCCESS
     return BoardResult.EXISTS
 
 
