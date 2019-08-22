@@ -14,8 +14,10 @@ def apicache(path):
 
         resulttext = ""
         resultstatus = 500
+
+        fullpath = path + "?" + request.query_string.decode()
         
-        cachefile = hashlib.sha256(path.encode()).hexdigest() + ".cache"
+        cachefile = hashlib.sha256(fullpath.encode()).hexdigest() + ".cache"
         cachefile = os.path.join(CACHE_PATH, cachefile)
         
 
@@ -32,13 +34,13 @@ def apicache(path):
 
         
 
-        r = requests.get("http://api.korea.go.kr/openapi/" + path + "?" + request.query_string.decode(), timeout=None)
+        r = requests.get("http://api.korea.go.kr/openapi/" + fullpath, timeout=None)
         resulttext = r.text
         resultstatus = r.status_code
 
-
-        with open(cachefile, "w") as fp:
-            fp.write(resulttext)
+        if resultstatus != 404:
+            with open(cachefile, "w") as fp:
+                fp.write(resulttext)
         
 
         res = Response(response=resulttext, status=resultstatus, mimetype="application/xml")
