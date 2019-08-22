@@ -157,7 +157,7 @@ class ParentInfoView(Resource):
             newinfo.set_column('gender', args['gender'])
         if args.get('birthday'):
             try:
-                dt = datetime.datetime.fromisoformat(args['datetime'])
+                dt = datetime.datetime.fromisoformat(args['birthday'])
                 newinfo.set_enc_datetime('birthday', dt)
             except ValueError:
                 return {'message':{'datetime': 'Wrong datetime format. It should be ISO 8601 format.'}}, 400
@@ -273,6 +273,34 @@ class ParentGroupView(Resource):
         db.session.commit()
 
         return {}, 200
+    
+    @login_required
+    def post(self, group_id):
+
+        parser = reqparse.RequestParser()
+        parser.add_argument("name", type=str, required=True)
+        parser.add_argument("prefer_call", type=int, default=0, required=False)
+        parser.add_argument("prefer_visit", type=int, default=0, required=False)
+
+        args = parser.parse_args()
+
+        user = get_user()
+
+        newgroup = ParentGroup.query.get(group_id)
+
+        if newgroup == None or newgroup.user != user:
+            return {}, 404
+
+        newgroup.name = args['name']
+        newgroup.prefer_call = args['prefer_call']
+        newgroup.prefer_visit = args['prefer_visit']
+
+        newgroup.user = user
+
+        db.session.add(newgroup)
+        db.session.commit()
+
+        return {}, 201
     
 class ParentGroupMove(Resource):
 
