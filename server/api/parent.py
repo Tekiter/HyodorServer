@@ -224,5 +224,7 @@ class ParentGroupManage(Resource):
 
 class ParentGroupView(Resource):
 
-    pass
+    @login_required
+    def delete(self, group_id):
+        pass
     

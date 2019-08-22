@@ -92,10 +92,10 @@ class ParentInfo(db.Model):
 
     def get_enc_datetime(self, column_name) -> dt.datetime:
         timestamp = self.get_column(column_name)
-        return dt.datetime.fromtimestamp(timestamp)
+        return dt.datetime.fromisoformat(timestamp)
 
     def set_enc_datetime(self, column_name, value: dt.datetime):
-        self.set_column(self, column_name, value.timestamp())
+        self.set_column(column_name, value.isoformat())
 
 
 
