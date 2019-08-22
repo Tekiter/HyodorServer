@@ -32,7 +32,7 @@ def apicache(path):
 
         
 
-        r = requests.get("http://api.korea.go.kr/openapi/" + path + "?" + request.query_string.decode())
+        r = requests.get("http://api.korea.go.kr/openapi/" + path + "?" + request.query_string.decode(), timeout=None)
         resulttext = r.text
         resultstatus = r.status_code
 
