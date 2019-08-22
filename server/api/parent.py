@@ -28,6 +28,7 @@ class ParentInfoManage(Resource):
         for i in items:
             tmp = {
                 'id': i.id,
+                'group_id': i.group_id,
                 'relation': i.get_column('relation'),
                 'name': i.get_column('name'),
                 'gender': i.get_column('gender'),
@@ -37,6 +38,10 @@ class ParentInfoManage(Resource):
                 tmp['birthday'] = i.get_enc_datetime('birthday').isoformat()
             else:
                 tmp['birthday'] = None
+
+            if i.group_id:
+                tmp['group_name'] = i.group.name
+
             outputlst.append(tmp)
 
 
@@ -104,6 +109,7 @@ class ParentInfoView(Resource):
         
         tmp = {
             'id': i.id,
+            'group_id': i.group_id,
             'relation': i.get_column('relation'),
             'name': i.get_column('name'),
             'gender': i.get_column('gender'),
@@ -113,6 +119,11 @@ class ParentInfoView(Resource):
             tmp['birthday'] = i.get_enc_datetime('birthday').isoformat()
         else:
             tmp['birthday'] = None
+        
+        if i.group_id:
+            tmp['group_name'] = i.group.name
+        
+        
         
         return tmp, 200
 
@@ -170,6 +181,32 @@ class ParentInfoView(Resource):
         db.session.commit()
 
         return {}, 200
+    
+    
+    @login_required
+    def put(self, parent_id):
+        parser = reqparse.RequestParser()
+        parser.add_argument("target_group_id", type=int, required=True)
+
+        args = parser.parse_args()
+
+
+        user = get_user()
+
+        parent: ParentInfo = ParentInfo.query.get(parent_id)
+
+        if parent == None or parent.user != user:
+            return {}, 404
+
+        group: ParentGroup = ParentGroup.query.get(args['target_group_id'])
+        if group == None:
+            return {}, 400
+        
+        parent.group = group
+        
+        db.session.commit()
+        
+        return {}, 200
         
 
 
@@ -226,5 +263,39 @@ class ParentGroupView(Resource):
 
     @login_required
     def delete(self, group_id):
-        pass
+        user = get_user()
+        group: ParentGroup = ParentGroup.query.get(group_id)
+        
+        if group == None or group.user_id != user:
+            return {}, 404
+        
+        db.session.delete(group)
+        db.session.commit()
+
+        return {}, 200
+    
+class ParentGroupMove(Resource):
+
+    @login_required
+    def post(self, parent_id):
+        parser = reqparse.RequestParser()
+        parser.add_argument("target_group_id", type=int, required=True)
+
+        args = parser.parse_args()
+
+
+        user = get_user()
+
+        parent: ParentInfo = ParentInfo.query.get(parent_id)
+
+        if parent == None or parent.user != user:
+            return {}, 404
+
+        group: ParentGroup = ParentGroup.query.get(args['target_group_id'])
+        if group == None:
+            return {}, 400
+        
+        parent.group = group
+        
+        db.session.commit()
     

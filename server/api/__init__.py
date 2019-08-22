@@ -29,5 +29,7 @@ def load_api(api, base):
     api.add_resource(parent.ParentInfoView, base + '/parent/<int:parent_id>', endpoint="parentmanageview")
     
     api.add_resource(parent.ParentGroupManage, base + '/parentgroup', endpoint="parentgroupmanage")
+    api.add_resource(parent.ParentGroupView, base + '/parentgroup/<int:group_id>', endpoint="parentgroupmanageview")
+    api.add_resource(parent.ParentGroupMove, base + '/parent/move/<int:parent_id>', endpoint="parentgroupmove")
 
 
