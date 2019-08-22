@@ -186,6 +186,8 @@ def edit_post(post_id, epost: BoardPost) -> BoardResult:
 
 def get_post_content(post_id):
     post: BoardPost = BoardPost.query.filter_by(id=post_id).first()
+    post.vote_up = get_vote_up(post.id)
+    post.vote_down = get_vote_down(post.id)
     
     if post == None:
         return BoardResult.NOT_EXISTS, None
