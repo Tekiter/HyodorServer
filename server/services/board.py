@@ -110,6 +110,8 @@ def get_posts(board_id=None, amount=None, start=0) -> List[BoardPost]:
     
 
     for p in posts:
+        p.vote_up = get_vote_up(p.id)
+        p.vote_down = get_vote_down(p.id)
         result.append(p)
     
     return BoardResult.SUCCESS, result
@@ -193,9 +195,14 @@ def get_post_content(post_id):
 def vote_up_post(post_id):
     user = get_user()
     
+    if BoardPost.query.get(post_id) == None:
+        return BoardResult.NOT_EXISTS
+
     vote = BoardPostVote.query.filter(BoardPostVote.post_id==post_id, BoardPostVote.owner_id==user.id, BoardPostVote.is_comment==False).first()
     if vote == None:
-        BoardPostVote(post_id=post_id, owner_id=user.id, vote_up=1)
+        vote = BoardPostVote(post_id=post_id, owner_id=user.id, vote_up=1, vote_down=0)
+        db.session.add(vote)
+        db.session.commit()
         return BoardResult.SUCCESS
     else:
         if vote.vote_up == 0:
@@ -204,14 +211,43 @@ def vote_up_post(post_id):
 
             db.session.commit()
             return BoardResult.SUCCESS
-    return BoardResult.EXISTS
+        else:
+            return BoardResult.EXISTS
+    return BoardResult.NOT_EXISTS
+
+
+def get_vote_up(post_id):
+
+    count = BoardPostVote.query.filter(BoardPostVote.post_id==post_id, BoardPostVote.is_comment==False, BoardPostVote.vote_up==1).count()
+
+    return count
+
+
+def is_voted_up(post_id):
+    user = get_user()
+    vote = BoardPostVote.query.filter_by(owner=user, is_comment=False, post_id=post_id, vote_up=1).first()
+
+    return vote != None
+
+
+def is_voted_down(post_id):
+    user = get_user()
+    vote = BoardPostVote.query.filter_by(owner=user, is_comment=False, post_id=post_id, vote_down=1).first()
+
+    return vote != None
+
 
 def vote_down_post(post_id):
     user = get_user()
+
+    if BoardPost.query.get(post_id) == None:
+        return BoardResult.NOT_EXISTS
     
     vote = BoardPostVote.query.filter(BoardPostVote.post_id==post_id, BoardPostVote.owner_id==user.id, BoardPostVote.is_comment==False).first()
     if vote == None:
-        BoardPostVote(post_id=post_id, owner_id=user.id, vote_down=1)
+        BoardPostVote(post_id=post_id, owner_id=user.id, vote_down=1, vote_up=0)
+        db.session.add(vote)
+        db.session.commit()
         return BoardResult.SUCCESS
     else:
         if vote.vote_down == 0:
@@ -220,7 +256,16 @@ def vote_down_post(post_id):
 
             db.session.commit()
             return BoardResult.SUCCESS
+        else:
+            return BoardResult.EXISTS
     return BoardResult.EXISTS
+
+
+def get_vote_down(post_id):
+
+    count = BoardPostVote.query.filter(BoardPostVote.post_id==post_id, BoardPostVote.is_comment==False,BoardPostVote.vote_down==1).count()
+
+    return count
 
 
 

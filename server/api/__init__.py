@@ -10,6 +10,7 @@ def load_api(api, base):
     api.add_resource(board.BoardPostView, base + '/board/post/<int:post_id>', endpoint="boardpost")
     api.add_resource(board.BoardComment, base + '/board/comment', endpoint="boardcomment")
     api.add_resource(board.BoardCommentAction, base + '/board/comment/<int:comment_id>', endpoint="boardcommentaction")
+    api.add_resource(board.BoardPostVote, base + '/board/vote/<int:post_id>', endpoint="boardvote")
 
 
     api.add_resource(login.Login, base + '/login', endpoint="login")

@@ -8,7 +8,8 @@ from ..model import User, Board, BoardPost, Comment, BoardPostVote
 from ..services.login import login_required, permission_required, get_user, UserPermission
 from ..services.board import (create_board, post_board, get_boards, get_posts, get_userinfo, post_post, BoardResult,
                             get_post_count, get_post_content, post_comment, delete_post, delete_comment, get_comment,
-                            delete_board, edit_post, edit_comment)
+                            delete_board, edit_post, edit_comment, vote_up_post, vote_down_post, get_vote_up, get_vote_down,
+                            is_voted_up, is_voted_down)
 
 
 
@@ -211,6 +212,40 @@ class BoardPostView(Resource):
             return {}, 404
         if result == BoardResult.SUCCESS:
             return {}, 200
+
+        return {}, 500
+
+
+class BoardPostVote(Resource):
+
+    @login_required
+    def get(self, post_id):
+        return {
+            "up":is_voted_up(post_id),
+            "down":is_voted_down(post_id)
+        }
+
+    @login_required
+    def post(self, post_id):
+        parser = reqparse.RequestParser()
+
+        parser.add_argument("isup", type=bool, required=True, help=MSG_REQUIRED)
+
+        args = parser.parse_args()
+
+        if args['isup']:
+            result = vote_up_post(post_id)
+        else:
+            result = vote_down_post(post_id)
+
+        if result == BoardResult.SUCCESS:
+            return {}, 200
+
+        if result == BoardResult.NOT_EXISTS:
+            return {}, 404
+        
+        if result == BoardResult.EXISTS:
+            return {}, 409
 
         return {}, 500
 
