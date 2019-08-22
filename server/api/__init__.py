@@ -1,5 +1,5 @@
 
-from . import login, board, schedule, admin
+from . import login, board, schedule, admin, parent
 
 def load_api(api, base):
     
@@ -24,6 +24,8 @@ def load_api(api, base):
     api.add_resource(admin.UserManageList, base + '/admin/user', endpoint="adminuserlist")
     api.add_resource(admin.UserManage, base + '/admin/user/<string:username>', endpoint="adminusermanage")
     api.add_resource(admin.BoardManageList, base + '/admin/board', endpoint="adminboardlist")
+
+    api.add_resource(parent.ParentInfoManage, base + '/parent', endpoint="parentmanage")
     
 
 
