@@ -82,7 +82,10 @@ class ParentInfo(db.Model):
     additional_info = db.Column(db.String(5000))
 
     def get_column(self, column_name):
-        return enc.decrypt(getattr(self, column_name))
+        try:
+            return enc.decrypt(getattr(self, column_name))
+        except AttributeError:
+            return None
 
     def set_column(self, column_name, value):
         setattr(self, column_name, enc.encrypt(value))

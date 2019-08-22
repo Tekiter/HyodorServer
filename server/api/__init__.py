@@ -26,6 +26,8 @@ def load_api(api, base):
     api.add_resource(admin.BoardManageList, base + '/admin/board', endpoint="adminboardlist")
 
     api.add_resource(parent.ParentInfoManage, base + '/parent', endpoint="parentmanage")
+    api.add_resource(parent.ParentInfoView, base + '/parent/<int:parent_id>', endpoint="parentmanageview")
     
+    api.add_resource(parent.ParentGroupManage, base + '/parentgroup', endpoint="parentgroupmanage")
 
 
