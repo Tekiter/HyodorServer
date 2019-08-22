@@ -212,3 +212,12 @@ class ParentGroupManage(Resource):
 
         newgroup = ParentGroup()
         newgroup.name = args['name']
+        newgroup.prefer_call = args['prefer_call']
+        newgroup.prefer_visit = args['prefer_visit']
+
+        newgroup.user = user
+
+        db.session.add(newgroup)
+        db.session.commit()
+
+        return {}, 201
