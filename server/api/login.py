@@ -123,10 +123,24 @@ class Login(Resource):
             return {"msg":"알 수 없는 오류입니다."}, 500
 
     
+    @login_required
     def delete(self):
         parser = reqparse.RequestParser()
 
-        parser.add_argument("")
+        parser.add_argument("password", type=str, help=MSG_REQUIRED)
+
+        args = parser.parse_args()
+
+        result = withdraw(args['password'])
+
+        if result == LoginResult.SUCCESS:
+            return {}, 200
+        if result == LoginResult.NOT_EXISTS:
+            return {}, 401
+        if result == LoginResult.INVALID_IDPW:
+            return {}, 403
+        return {}, 500
+        
 
 
 class LoginRefresh(Resource):
