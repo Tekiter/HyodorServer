@@ -275,7 +275,7 @@ class ParentGroupView(Resource):
         return {}, 200
     
     @login_required
-    def post(self, group_id):
+    def patch(self, group_id):
 
         parser = reqparse.RequestParser()
         parser.add_argument("name", type=str, required=True)
