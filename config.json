@@ -1,6 +1,6 @@
 {
-    "JWT_SECRET_KEY": "somesecret",
-    "SECRET_KEY": "secrettwo",
+    "JWT_SECRET_KEY": "66pZTJ_6UGBCptL670_mKNtLDrFrwzXmIm2fI1rhMQI=",
+    "SECRET_KEY": "3FppeElXIhvaT4xDlOCU6kmunWDZ4-qGVERnDtcATk8=",
     "PROPAGATE_EXCEPTIONS": true,
     "SQLALCHEMY_TRACK_MODIFICATIONS": false
 }
